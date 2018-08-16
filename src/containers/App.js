@@ -1,48 +1,54 @@
 import  React  from "react";
+import { connect } from "react-redux";
 import 'tachyons'
-import './App.css' 
+import './App.css'
+import { ErrorBoundry } from "../components/errorboundry"; 
 import { CardList }  from "../components/card-list";
 import { SearchBar } from "../components/searchbar";
 import { Scroll } from "../components/scroll";
+import { setSearchField , requestRobots} from "../actions";
 
+const mapStateToProps = state => {
+ return {
+    searchField : state.searchRobots.searchField,
+    robots : state.requestRobots.robots,
+    isPending : state.requestRobots.isPending,
+    error : state.requestRobots.error,
+ }
+}
 
-export class App extends React.Component {
-    
-    constructor(){
-        super();
-        this.state = {
-            robots : [],
-            searchField : ''
-        }
+const mapDispatchToProps = dispatch => {
+    return {
+        onSearchChange : (event) => dispatch(setSearchField(event.target.value)),
+        onRequestRobots : () => dispatch(requestRobots())
     }
+}
 
-    onSearchChange = (e) => {
-        this.setState(
-            {searchField : e.target.value}
-        ) 
-    }
+class App extends React.Component {
+
 
     componentDidMount() {
-        fetch('https://jsonplaceholder.typicode.com/users')
-            .then(res => res.json())
-            .then(users => this.setState({  }));
+        this.props.onRequestRobots();
     }
 
     render () {
-        const {robots , searchField } = this.state;
+        const {searchField , onSearchChange ,robots } = this.props; 
         const filteredRobots = robots.filter(robot  => {
             return robot.name.toLowerCase().includes(searchField.toLowerCase())
         }) 
-        return !robots.length ?
-            <h1 className='tc'>Loading</h1> :
-            <div className='tc'>
-                <h1 className='f2'>Robo Friends</h1>
-                <SearchBar 
-                    searchChange = {this.onSearchChange }
-                />
-                <Scroll>
-                    <CardList robots = {filteredRobots}/>
-                </Scroll>
-            </div>
+        return !robots.length ?<h1 className='tc'>Loading</h1> 
+                :<div className='tc'>
+                    <h1 className='f2'>Robo Friends</h1>
+                    <SearchBar 
+                        searchChange = {onSearchChange}
+                    />
+                    <Scroll>
+                        <ErrorBoundry>
+                            <CardList robots = {filteredRobots}/>
+                        </ErrorBoundry>
+                    </Scroll>
+                </div>
     }
 } 
+
+export default connect(mapStateToProps , mapDispatchToProps)(App); 
