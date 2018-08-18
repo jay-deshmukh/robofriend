@@ -6,7 +6,9 @@ import { ErrorBoundry } from "../components/errorboundry";
 import { CardList }  from "../components/card-list";
 import { SearchBar } from "../components/searchbar";
 import { Scroll } from "../components/scroll";
+import { Header } from "../components/header";
 import { setSearchField , requestRobots} from "../actions";
+
 
 const mapStateToProps = state => {
  return {
@@ -36,9 +38,9 @@ class App extends React.Component {
         const filteredRobots = robots.filter(robot  => {
             return robot.name.toLowerCase().includes(searchField.toLowerCase())
         }) 
-        return !robots.length ?<h1 className='tc'>Loading</h1> 
-                :<div className='tc'>
-                    <h1 className='f2'>Robo Friends</h1>
+        return !robots.length ? <h1 className='tc'>Loading</h1> :
+                <div className='tc'>
+                    <Header />
                     <SearchBar 
                         searchChange = {onSearchChange}
                     />
