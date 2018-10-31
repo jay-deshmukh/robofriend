@@ -9,10 +9,7 @@ import App  from "./containers/App";
 import { searchRobots , requestRobots } from "./reducers";
 import registerServiceWorker from './registerServiceWorker';
 
-
-
 // const logger = createLogger();
-
 const rootReducer =  combineReducers({
     searchRobots ,
     requestRobots
